@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { width: 320px; padding: 15px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #121212; color: #e0e0e0; margin: 0; }
+    h3 { margin: 0; color: #fff; font-size: 18px; }
+    .master-toggle { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;}
+    
+    /* Toggle Switch */
+    .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #555; transition: .4s; border-radius: 22px; }
+    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: #8ab4f8; }
+    input:checked + .slider:before { transform: translateX(18px); }
+
+    .setting { margin-bottom: 12px; }
+    label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px; color: #ccc; }
+    .value { font-weight: bold; color: #8ab4f8; }
+    input[type="range"] { width: 100%; height: 4px; background: #333; border-radius: 2px; outline: none; -webkit-appearance: none; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: #8ab4f8; border-radius: 50%; cursor: pointer; }
+    
+    .disabled-state { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+    
+    hr { border: 0; border-top: 1px solid #333; margin: 15px 0; }
+    h4 { margin: 0 0 10px 0; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px;}
+    
+    button#resetBtn { background: #333; color: #fff; border: 1px solid #555; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; width: 100%; transition: background 0.2s; }
+    button#resetBtn:hover { background: #444; }
+  </style>
+</head>
+<body>
+  <div class="master-toggle">
+    <h3>OLED-me</h3>
+    <label class="switch">
+      <input type="checkbox" id="masterToggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div id="settingsContainer">
+    <h4>Global Filters</h4>
+    <div class="setting">
+      <label>Contrast <span class="value" id="globalContrastVal">1.12</span></label>
+      <input type="range" id="globalContrast" min="1" max="2" step="0.01">
+    </div>
+    <div class="setting">
+      <label>Brightness <span class="value" id="globalBrightnessVal">1.08</span></label>
+      <input type="range" id="globalBrightness" min="0.5" max="1.5" step="0.01">
+    </div>
+    <div class="setting">
+      <label>Saturation <span class="value" id="globalSaturationVal">1.15</span></label>
+      <input type="range" id="globalSaturation" min="0" max="3" step="0.01">
+    </div>
+
+    <hr>
+    <button id="resetBtn">Reset to Defaults</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
