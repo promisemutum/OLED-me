@@ -3,36 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <style>
-    body { width: 320px; padding: 15px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #121212; color: #e0e0e0; margin: 0; }
-    h3 { margin: 0; color: #fff; font-size: 18px; }
-    .master-toggle { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;}
-    
-    /* Toggle Switch */
-    .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #555; transition: .4s; border-radius: 22px; }
-    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-    input:checked + .slider { background-color: #8ab4f8; }
-    input:checked + .slider:before { transform: translateX(18px); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 300px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #121212;
+      color: #e0e0e0;
+    }
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 16px;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: #1e1e1e;
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
+    .toggle-row span { font-size: 14px; font-weight: 500; }
 
-    .setting { margin-bottom: 12px; }
-    label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px; color: #ccc; }
-    .value { font-weight: bold; color: #8ab4f8; }
-    input[type="range"] { width: 100%; height: 4px; background: #333; border-radius: 2px; outline: none; -webkit-appearance: none; }
-    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: #8ab4f8; border-radius: 50%; cursor: pointer; }
-    
-    .disabled-state { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
-    
-    hr { border: 0; border-top: 1px solid #333; margin: 15px 0; }
-    h4 { margin: 0 0 10px 0; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px;}
-    
-    button#resetBtn { background: #333; color: #fff; border: 1px solid #555; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; width: 100%; transition: background 0.2s; }
-    button#resetBtn:hover { background: #444; }
+    /* Toggle Switch */
+    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #444;
+      transition: .3s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute; content: "";
+      height: 18px; width: 18px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: #8ab4f8; }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    /* Settings */
+    #settingsContainer { transition: opacity 0.2s; }
+    #settingsContainer.disabled-state { opacity: 0.35; pointer-events: none; }
+
+    .setting {
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      background: #1e1e1e;
+      border-radius: 8px;
+    }
+    .setting label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .setting .value {
+      color: #8ab4f8;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    input[type="range"] {
+      width: 100%;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #333;
+      border-radius: 2px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #8ab4f8;
+      cursor: pointer;
+    }
+    .setting .hint {
+      font-size: 11px;
+      color: #777;
+      margin-top: 4px;
+    }
+
+    button#resetBtn {
+      width: 100%;
+      padding: 9px;
+      background: #2a2a2a;
+      color: #ccc;
+      border: 1px solid #333;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      margin-top: 4px;
+      transition: background 0.15s;
+    }
+    button#resetBtn:hover { background: #333; color: #fff; }
   </style>
 </head>
 <body>
-  <div class="master-toggle">
-    <h3>OLED-me</h3>
+  <h1>OLED-me</h1>
+
+  <div class="toggle-row">
+    <span>Enable</span>
     <label class="switch">
       <input type="checkbox" id="masterToggle">
       <span class="slider"></span>
@@ -40,23 +122,35 @@
   </div>
 
   <div id="settingsContainer">
-    <h4>Global Filters</h4>
     <div class="setting">
-      <label>Contrast <span class="value" id="globalContrastVal">1.12</span></label>
-      <input type="range" id="globalContrast" min="1" max="2" step="0.01">
-    </div>
-    <div class="setting">
-      <label>Brightness <span class="value" id="globalBrightnessVal">1.08</span></label>
-      <input type="range" id="globalBrightness" min="0.5" max="1.5" step="0.01">
-    </div>
-    <div class="setting">
-      <label>Saturation <span class="value" id="globalSaturationVal">1.15</span></label>
-      <input type="range" id="globalSaturation" min="0" max="3" step="0.01">
+      <label>
+        <span>Black Crush</span>
+        <span class="value" id="globalContrastVal">1.6</span>
+      </label>
+      <input type="range" id="globalContrast" min="1.0" max="2.0" step="0.01" value="1.6">
+      <div class="hint">S-curve intensity — darkens shadows for OLED-like depth</div>
     </div>
 
-    <hr>
-    <button id="resetBtn">Reset to Defaults</button>
+    <div class="setting">
+      <label>
+        <span>Brightness</span>
+        <span class="value" id="globalBrightnessVal">0.9</span>
+      </label>
+      <input type="range" id="globalBrightness" min="0.8" max="1.3" step="0.01" value="0.9">
+      <div class="hint">Overall luminance boost for HDR-like pop</div>
+    </div>
+
+    <div class="setting">
+      <label>
+        <span>Saturation</span>
+        <span class="value" id="globalSaturationVal">1.2</span>
+      </label>
+      <input type="range" id="globalSaturation" min="0.5" max="2.0" step="0.01" value="1.2">
+      <div class="hint">Color volume — punchier, more vivid colors</div>
+    </div>
   </div>
+
+  <button id="resetBtn">Reset to Defaults</button>
 
   <script src="popup.js"></script>
 </body>

@@ -1,9 +1,19 @@
 const DEFAULT_SETTINGS = {
   enabled: true,
-  globalContrast: 1.12,
-  globalBrightness: 1.08,
-  globalSaturation: 1.15
+  globalContrast: 1.6,   // Updated
+  globalBrightness: 0.9, // Updated
+  globalSaturation: 1.2  // Updated
 };
+
+// --- DEBOUNCE UTILITY ---
+// Prevents firing a function too many times in rapid succession
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const masterToggle = document.getElementById('masterToggle');
@@ -23,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
   chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
     masterToggle.checked = settings.enabled;
     updateUIState(settings.enabled);
-    
+
     Object.keys(DEFAULT_SETTINGS).forEach(key => {
       if (key === 'enabled') return;
       const input = document.getElementById(key);
@@ -35,35 +45,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // --- DEBOUNCED STORAGE WRITE ---
+  // Wait 300ms after the user stops dragging before writing to storage.
+  // This prevents the MAX_WRITE_OPERATIONS_PER_MINUTE quota error.
+  const debouncedSave = debounce((key, value) => {
+    chrome.storage.sync.set({ [key]: value });
+  }, 300);
+
   // 2. Listen for slider changes
   const sliderIds = Object.keys(DEFAULT_SETTINGS).filter(k => k !== 'enabled');
   sliderIds.forEach(id => {
     const input = document.getElementById(id);
     const valSpan = document.getElementById(id + 'Val');
+    
     if (input) {
       input.addEventListener('input', () => {
         const val = parseFloat(input.value);
-        if(valSpan) valSpan.textContent = val;
-        chrome.storage.sync.set({ [id]: val });
+        // Update the UI text immediately so it feels responsive
+        if(valSpan) valSpan.textContent = val; 
+        
+        // Use the debounced save instead of direct chrome.storage.sync.set
+        debouncedSave(id, val);
       });
     }
   });
 
-  // 3. Listen for Master Toggle switch
+  // 3. Listen for Master Toggle switch (Clicks are fine, no debounce needed)
   masterToggle.addEventListener('change', (e) => {
     const isEnabled = e.target.checked;
     updateUIState(isEnabled);
     chrome.storage.sync.set({ enabled: isEnabled });
   });
 
-  // 4. Listen for Reset button
+  // 4. Listen for Reset button (Clicks are fine, no debounce needed)
   resetBtn.addEventListener('click', () => {
-    // Only reset sliders, keep the enabled state as is
     const currentEnabledState = masterToggle.checked;
     const settingsToReset = { ...DEFAULT_SETTINGS, enabled: currentEnabledState };
     
     chrome.storage.sync.set(settingsToReset, () => {
-      // Update UI to reflect reset defaults
       Object.keys(DEFAULT_SETTINGS).forEach(key => {
         if (key === 'enabled') return;
         const input = document.getElementById(key);
